@@ -72,8 +72,6 @@ img {
   main header button:has(svg) span {
     display: none;
   }
-
-  header button
 }
 
 button {
