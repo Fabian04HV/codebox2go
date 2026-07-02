@@ -48,6 +48,34 @@ img {
   gap: 3rem;
 }
 
+@media(width < 1300px) {
+  .App {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media(width < 700px) {
+  aside footer .cta {
+    display: none;
+  }
+
+  main {
+    width: 100%;
+  }
+
+  main header input {
+    flex: 1;
+  }
+
+  main header button:has(svg) span {
+    display: none;
+  }
+
+  header button
+}
+
 button {
   padding: .6em 1.4em;
   font: inherit;
@@ -95,15 +123,33 @@ select {
   cursor: pointer;
 }
 
+
 main header {
-  display: flex;
-  gap: .5rem;
+  display: flex;    
+  flex-wrap: wrap-reverse;
+  gap: 2rem;
   align-items: center;
   padding: 1rem 0;
 }
 
+main header div {
+  /* width: 100%; */
+  display: flex;
+  gap: .5em;
+}
+
+main h2 {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: .5em;
+}
+
 aside{
   width: 100%;
+  max-width: 30rem;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -131,7 +177,6 @@ aside{
   border: none;
 }
 
-
 .controls label {
   flex: 1;
   border: 1px solid var(--line-color);
@@ -150,7 +195,6 @@ label[for] {
 }
  
 main header input {
-  margin-left: auto;
   width: 10rem;
   color: var(--text-color);
   font: inherit;
@@ -323,7 +367,6 @@ textarea {
 }
 
 .export-size-display {
-  margin-left: .5em;
   font-family: Consolas;
   color: var(--secondary-text-color);
 }
@@ -337,16 +380,17 @@ aside footer {
 
 footer button {
   flex-grow: 1;
+  text-align: center;
 }
 
 button:has(svg) {
   display: flex;
   gap: .5em;
   align-items: center;
+  justify-content: center;
   padding: .5em .9em .5em .65em;
 }
 
 button svg {
   fill: var(--text-color);
-  flex: 1 1 0;
 }
