@@ -48,10 +48,6 @@ img {
   gap: 3rem;
 }
 
-h1, h2 {
-  margin-bottom: 1rem;
-}
-
 button {
   padding: .6em 1.4em;
   font: inherit;
@@ -99,19 +95,19 @@ select {
   cursor: pointer;
 }
 
+main header {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  padding: 1rem 0;
+}
+
 aside{
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
   gap: .5rem;
-}
-
-aside footer {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
-  gap: .5em;
 }
 
 .controls {
@@ -151,6 +147,17 @@ aside footer {
 
 label[for] {
   cursor: pointer;
+}
+ 
+main header input {
+  margin-left: auto;
+  width: 10rem;
+  color: var(--text-color);
+  font: inherit;
+  background-color: var(--surface-color);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius);
+  padding: .5em;
 }
 
 .controls input {
@@ -321,23 +328,25 @@ textarea {
   color: var(--secondary-text-color);
 }
 
-.CodeBox .clear-button {
-  padding: 0;
-  height: 1.25em;
-  width: 1.25em;
-
-  border-radius: .35em;
+aside footer {
+  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  right: .5em;
-  border: none;
-  background: none;
-  color: var(--secondary-text-color);
+  justify-content: space-between;
+  gap: .5em;
 }
 
-.clear-button:hover {
-  background: var(--hover-color);
-  color: var(--text-color);
+footer button {
+  flex-grow: 1;
+}
+
+button:has(svg) {
+  display: flex;
+  gap: .5em;
+  align-items: center;
+  padding: .5em .9em .5em .65em;
+}
+
+button svg {
+  fill: var(--text-color);
+  flex: 1 1 0;
 }

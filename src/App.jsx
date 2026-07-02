@@ -25,6 +25,7 @@ function App() {
   const [exportSize, setExportSize] = useState('')
   const [header, setHeader] = useState('')
   const [code, setCode] = useState('')
+  const [fileName, setFileName] = useState('')
 
   const updateSetting = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }))
@@ -56,6 +57,7 @@ function App() {
     }
   }, [])
 
+  const handleFileName = (e) => { setFileName( e.target.value ) }
   const handleReset = () => { setSettings({ ...DEFAULT_SETTINGS }) }
   const handleClear = () => { setCode(''); setHeader('') }
   const handleExport = () => {
@@ -65,7 +67,7 @@ function App() {
       pixelRatio: 1,
       cacheBust: true
     })
-    .then((dataUrl) => download(dataUrl, `codebox-${exportSize}.png`))
+    .then((dataUrl) => download(dataUrl, fileName !== '' ? `${fileName.trim()}`: `codebox2go-${exportSize}.png`))
     .catch(error => console.error(error))
   }
 
@@ -79,7 +81,11 @@ function App() {
         onExport={handleExport}
       />
       <main>     
-        <h2>Result: <span className='export-size-display'>{ exportSize }</span></h2>
+        <header>
+          <h2>Result: <span className='export-size-display'>{ exportSize }</span></h2>
+          <input type="text" placeholder='file name' onChange={handleFileName} value={fileName}/>
+          <button type='button' id='export-button' className='cta' onClick={handleExport}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-328.46 309.23-499.23l42.16-43.38L450-444v-336h60v336l98.61-98.61 42.16 43.38L480-328.46ZM252.31-180Q222-180 201-201q-21-21-21-51.31v-108.46h60v108.46q0 4.62 3.85 8.46 3.84 3.85 8.46 3.85h455.38q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46v-108.46h60v108.46Q780-222 759-201q-21 21-51.31 21H252.31Z"/></svg><span>Download</span></button>
+        </header>
         <CodeBox 
           settings={settings} 
           ref={codeBoxRef}
