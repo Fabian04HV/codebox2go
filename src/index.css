@@ -1,0 +1,343 @@
+:root {
+  --bg-color: #181818;
+  --text-color: white;
+  --secondary-text-color: #73727d;
+  --line-color: #363636;
+  --surface-color: #1f1f1f;
+  --hover-color: #2e2e2e;
+  --brand-color: #5040ff;
+  --brand-hover: oklch(from var(--brand-color) calc(l + .075) c h);
+
+  --radius: .5em;
+
+  --code-background-color: #1f1f1f;
+  --code-border-color: #ffffff1a;
+  --code-header-color: #ffffff48;
+  --code-numbers-color: #ffffff3e;
+
+  --code-size: 36px;
+  --code-header-padding: 1em;
+  --code-body-padding: 1.25em;
+
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: Poppins;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.App {
+  min-height: 100dvh;
+  padding: 3%;
+  display: grid;
+  grid-template-columns: 25rem 1fr;
+  gap: 3rem;
+}
+
+h1, h2 {
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: .6em 1.4em;
+  font: inherit;
+  border: 1px solid var(--line-color);
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 200ms ease;
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+button.cta {
+  background-color: var(--brand-color);
+  border-color: var(--brand-color);
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--brand-hover);
+  }
+}
+
+input, textarea, select {
+  accent-color: var(--brand-color)
+  
+}
+
+textarea:focus, input:focus {
+  outline: none;
+}
+
+select {
+  flex: 1;
+  appearance: base-select;
+  font: inherit;
+  padding: .6em 1em;
+  border-radius: var(--radius);
+  background-color: var(--surface-color);
+  border: 1px solid var(--line-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+aside{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: .5rem;
+}
+
+aside footer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
+  gap: .5em;
+}
+
+.controls {
+  width: 100%;
+  background-color: var(--surface-color);
+  border: 1px solid var(--line-color);
+  padding: 1rem;
+  border-radius: var(--radius);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .5rem;
+}
+
+.controls .span-3 {
+  grid-column: span 2;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius);
+}
+
+.controls .span-3 label {
+  border: none;
+}
+
+
+.controls label {
+  flex: 1;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius);
+  padding: .6em 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5em;
+  word-wrap: nowrap;
+  min-width: max-content;
+}
+
+label[for] {
+  cursor: pointer;
+}
+
+.controls input {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font: inherit;
+}
+
+input[type="color"] {
+  border: 1px solid #f0f0f0;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.controls input[type="number"] {
+  width: 2rem;
+  border-bottom: 1px solid var(--line-color);
+  text-align: right;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.CodeBox {
+  box-sizing:unset;
+  --code-radius: .5em;
+  font-size: var(--code-size);
+  width: max-content;
+  border-radius: var(--code-radius);
+  background-color: var(--code-background-color);
+  border: .05em solid var(--code-border-color);
+}
+
+.CodeBox .dots {
+  padding: var(--code-header-padding);
+  padding-right: 0;
+  display: inline-flex;
+  gap: .25em;
+}
+
+.dots span {
+  height: .6em;
+  width: .6em;
+  background-color: #ff5f57;
+  border-radius: 50%;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.dots span:nth-child(2) {
+  background-color: #ffbd2e;
+}
+
+.dots span:nth-child(3) {
+  background-color: #28c840;
+}
+
+.CodeBox:not(:has(.dots)) textarea, .CodeBox:not(:has(.dots)) .colored-text, .CodeBox:not(:has(.dots)) .line-numbers {
+  padding-top: var(--code-body-padding);
+}
+
+.CodeBox input, textarea {
+  font-family: Consolas;
+  font-size: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  border-radius: var(--code-radius);
+}
+
+.CodeBox .code-header {
+  display: flex;
+  align-items: center; 
+}
+
+.CodeBox .code-header input {
+  letter-spacing: -.035em;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: var(--code-header-padding);
+  font-size: .85em;
+  color: var(--code-header-color);
+  transition: background-color 100ms ease;
+
+  &:hover {
+    background-color: var(--line-color);
+  }
+}
+
+.code-header {
+  position: relative;
+}
+
+.CodeBox textarea {
+  resize: none;
+  padding: var(--code-body-padding);
+  padding-top: 0;
+  color: transparent;
+  height: 100%;
+
+  transition: background-color 100ms ease;
+
+  &:not(:focus):hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.CodeBox textarea:hover {
+  resize: both;
+}
+
+.CodeBox pre {
+  background-color: transparent !important;
+}
+
+.code-body {
+  position: relative;
+  display: flex;
+}
+
+.stacked-grid {
+  display: grid;
+  grid-template-areas: "stack";
+}
+
+textarea {
+  grid-area: stack; 
+  min-width: 100%;
+}
+
+.colored-text {
+  padding: var(--code-body-padding);
+  padding-top: 0;
+  grid-area: stack;
+  pointer-events: none;
+}
+
+.CodeBox textarea, .colored-text, .line-numbers {
+  line-height: 1.45em;
+  letter-spacing: .015em;
+  
+}
+
+.line-numbers {
+  min-width: 2ch;
+  display: grid;
+  align-content: start;
+  font-family: Consolas;
+  padding: var(--code-body-padding);
+  padding-top: 0;
+  padding-right: 0;
+  text-align: right;
+  color: var(--code-numbers-color);
+}
+
+.export-size-display {
+  margin-left: .5em;
+  font-family: Consolas;
+  color: var(--secondary-text-color);
+}
+
+.CodeBox .clear-button {
+  padding: 0;
+  height: 1.25em;
+  width: 1.25em;
+
+  border-radius: .35em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: .5em;
+  border: none;
+  background: none;
+  color: var(--secondary-text-color);
+}
+
+.clear-button:hover {
+  background: var(--hover-color);
+  color: var(--text-color);
+}
