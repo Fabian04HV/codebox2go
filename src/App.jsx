@@ -9,7 +9,6 @@ const DEFAULT_SETTINGS = {
   language: 'css',
   theme: 'dark-plus',
   hasBorder: true,
-  hasHeader: true,
   hasNumbers: false,
   size: 80,
   borderColor: '#ffffff',

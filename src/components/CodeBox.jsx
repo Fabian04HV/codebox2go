@@ -41,12 +41,12 @@ export default function CodeBox({ settings, ref, code, header, onCodeChange, onH
   const lineCount = code != "" ? code.split('\n').length : 0;
 
   return <div ref={ref} className="CodeBox" style={styles}>
-    { settings.hasHeader && (
-      <div className="code-header">
-        <div className="dots"><span></span><span></span><span></span></div>
-        <input onChange={handleHeaderInput} size={1} type="text" value={header}/>
-      </div>
-    )}
+    
+    <div className="code-header">
+      <div className="dots"><span></span><span></span><span></span></div>
+      <input onChange={handleHeaderInput} size={1} type="text" value={header}/>
+    </div>
+   
     <div className="code-body">
 
       {settings.hasNumbers && <label htmlFor="codebody" className="line-numbers">

@@ -13,6 +13,7 @@ const THEME_OPTIONS = [
 ]
 
 export default function Controls({ settings, onSettingChange, onReset, onClear, onExport }) {
+
   return (
   <aside className="form-layout">
     <div className="controls">
@@ -27,14 +28,10 @@ export default function Controls({ settings, onSettingChange, onReset, onClear, 
         <option value="javascript">JavaScript</option>
         <option value="jsx">React</option>
       </select>
-      <label htmlFor="hasHeaderInput">
-        <span>Header</span>
-        <input onChange={(e) => onSettingChange('hasHeader', e.target.checked)} checked={settings.hasHeader} id='hasHeaderInput' type='checkbox'/>
-      </label>
       <label htmlFor="hasNumbersInput">
         <span>Line Numbers</span>
         <input onChange={(e) => onSettingChange('hasNumbers', e.target.checked)} checked={settings.hasNumbers} id='hasNumbersInput' type='checkbox'/>
-      </label>         
+      </label>       
       <div className="span-3">
         <label htmlFor="border-color-input">
           <span>Border Color</span>
@@ -63,6 +60,14 @@ export default function Controls({ settings, onSettingChange, onReset, onClear, 
           <input onChange={(e) => onSettingChange('size', Number(e.target.value))} id="size" type="range" min={20} max={150} value={settings.size}/>
         </label>
       </div>
+      
+      <button className="span-3 purple-bg-button" onClick={() => {
+        onSettingChange('bgColor', '#191A2D')
+        onSettingChange('borderAlpha', 0.5)
+      }}>
+        Purple Background
+      </button>  
+ 
     </div>    
     <footer>
       <button type='button' onClick={onReset}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M677.23-63.54q-9.08-3.54-16.54-11L504.92-230.31Q490-244.62 490-265q0-20.38 14.92-35.31L653.23-448l-75.69-75.69 41.77-42.15 267.15 265.53q7.46 7.46 11 16.54 3.54 9.08 3.54 18.15 0 9.08-3.54 18.47-3.54 9.38-11 16.84L730.69-74.54q-7.46 7.46-16.84 11Q704.46-60 695.38-60q-9.07 0-18.15-3.54ZM558-269.23h273.62L695-405.85 558-269.23ZM180-140v-60h113.23q-69.3-45-111.27-118.27Q140-391.54 140-480q0-70.77 26.77-132.61 26.77-61.85 72.77-107.85 46-46 107.85-72.77Q409.23-820 480-820q118.61 0 208.81 71.42Q779-677.15 807.92-567.69h-62.23q-27.54-84.54-99.57-138.43Q574.08-760 480-760q-117 0-198.5 81.5T200-480q0 78.15 38.46 141.81 38.46 63.65 101.54 99.34V-360h60v220H180Z"/></svg><span>Reset Styles</span></button>
