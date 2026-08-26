@@ -16,10 +16,9 @@
   --code-numbers-color: #ffffff3e;
 
   --code-size: 36px;
-  --code-header-padding: 1em;
-  --code-body-padding: 1.25em;
-
-
+  --code-header-padding: .8em;
+  --code-body-padding: 1.25em 1.6em;
+  --line-numbers-padding: 1.5em;
 }
 
 * {
@@ -29,8 +28,8 @@
 }
 
 body {
-  min-height: 100dvh;
-  font-family: Poppins;
+  min-height: 100svh;
+  font-family: Poppins, Inter, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
 }
@@ -234,7 +233,7 @@ input[type=number] {
 
 .CodeBox {
   box-sizing:unset;
-  --code-radius: .5em;
+  --code-radius: .42em;
   font-size: var(--code-size);
   width: max-content;
   border-radius: var(--code-radius);
@@ -246,12 +245,12 @@ input[type=number] {
   padding: var(--code-header-padding);
   padding-right: 0;
   display: inline-flex;
-  gap: .25em;
+  gap: .175em;
 }
 
 .dots span {
-  height: .6em;
-  width: .6em;
+  height: .5em;
+  width: .5em;
   background-color: #ff5f57;
   border-radius: 50%;
   flex-shrink: 0;
@@ -289,7 +288,7 @@ input[type=number] {
   flex-grow: 1;
   flex-shrink: 1;
   padding: var(--code-header-padding);
-  font-size: .85em;
+  font-size: .75em;
   color: var(--code-header-color);
   transition: background-color 100ms ease;
 
@@ -357,7 +356,8 @@ textarea {
   display: grid;
   align-content: start;
   font-family: Consolas;
-  padding: var(--code-body-padding);
+  padding-left: var(--line-numbers-padding);
+  padding-bottom: var(--code-body-padding);
   padding-top: 0;
   padding-right: 0;
   text-align: right;

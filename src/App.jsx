@@ -10,11 +10,11 @@ const DEFAULT_SETTINGS = {
   theme: 'dark-plus',
   hasBorder: true,
   hasHeader: true,
-  hasNumbers: true,
-  size: 32,
+  hasNumbers: false,
+  size: 80,
   borderColor: '#ffffff',
-  borderWidth: .075,
-  borderAlpha: 0.1,
+  borderWidth: 0.1,
+  borderAlpha: 0.3,
   bgColor: '#1f1f1f',
   bgAlpha: 1
 }
