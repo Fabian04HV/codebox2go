@@ -1,103 +1,117 @@
-import { useLayoutEffect, useRef, useState } from 'react'
-import './App.css'
-import CodeBox from './components/CodeBox'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { codeToHtml } from 'shiki'
 import { toPng } from 'html-to-image'
-import download from 'downloadjs';
-import Controls from './components/Controls';
-
-const DEFAULT_SETTINGS = {
-  language: 'css',
-  theme: 'dark-plus',
-  hasBorder: true,
-  hasNumbers: false,
-  size: 80,
-  borderColor: '#ffffff',
-  borderWidth: 0.1,
-  borderAlpha: 0.3,
-  bgColor: '#1f1f1f',
-  bgAlpha: 1
-}
+import download from 'downloadjs'
+import Controls from './components/Controls'
+import Slide from './components/Slide'
+import { DEFAULT_SETTINGS, SAMPLE_CODE, SLIDE_THEMES } from './themes'
+import './App.css'
 
 function App() {
-  const codeBoxRef = useRef(null)
+  const frameRef = useRef(null)
+  const slideRef = useRef(null)
   const [settings, setSettings] = useState({ ...DEFAULT_SETTINGS })
-  const [exportSize, setExportSize] = useState('')
+  const [selectedTheme, setSelectedTheme] = useState('midnight')
+  const [code, setCode] = useState(SAMPLE_CODE)
   const [header, setHeader] = useState('')
-  const [code, setCode] = useState('')
   const [fileName, setFileName] = useState('')
+  const [highlight, setHighlight] = useState(null)
+  const [error, setError] = useState('')
+  const [exporting, setExporting] = useState(false)
+  const signature = JSON.stringify([code, settings.language, settings.theme])
+  const ready = highlight?.signature === signature && !highlight.error
 
-  const updateSetting = (key, value) => {
-    setSettings(prev => ({ ...prev, [key]: value }))
-  }
-
-  function updateExportSize() {
-    const codebox = codeBoxRef.current 
-    if(!codebox) return;
-
-    const width = Math.ceil(codebox.getBoundingClientRect().width)
-    const height = Math.ceil(codebox.getBoundingClientRect().height)
-    
-    setExportSize(`${width} × ${height}px`)
-  }
-
-  useLayoutEffect(() => {
-    const codebox = codeBoxRef.current
-    if(!codebox) return;
-
-    const observer = new ResizeObserver(() => {
-      updateExportSize()
-    })
-
-    observer.observe(codebox)
-    updateExportSize()
-
-    return () => {
-      observer.disconnect()
+  useEffect(() => {
+    const leaveFullscreen = event => {
+      if (event.key === 'Escape' && document.fullscreenElement === frameRef.current) {
+        document.exitFullscreen().catch(() => setError('Press Esc again to exit fullscreen.'))
+      }
     }
+    document.addEventListener('keydown', leaveFullscreen)
+    return () => document.removeEventListener('keydown', leaveFullscreen)
   }, [])
 
-  const handleFileName = (e) => { setFileName( e.target.value ) }
-  const handleReset = () => { setSettings({ ...DEFAULT_SETTINGS }) }
-  const handleClear = () => { setCode(''); setHeader('') }
-  const handleExport = () => {
-    if(!codeBoxRef.current) return
-
-    toPng(codeBoxRef.current, {
-      pixelRatio: 1,
-      cacheBust: true
+  useEffect(() => {
+    let cancelled = false
+    codeToHtml(code || ' ', { lang: settings.language, theme: settings.theme }).then(html => {
+      if (!cancelled) setHighlight({ signature, html })
+    }).catch(() => {
+      if (!cancelled) setHighlight({ signature, error: 'Could not highlight this code. Try a different language or highlighting theme.' })
     })
-    .then((dataUrl) => download(dataUrl, fileName !== '' ? `${fileName.trim()}`: `codebox2go-${exportSize}.png`))
-    .catch(error => console.error(error))
+    return () => { cancelled = true }
+  }, [code, settings.language, settings.theme, signature])
+
+  useLayoutEffect(() => {
+    const frame = frameRef.current
+    const resize = () => frame.style.setProperty('--preview-scale', Math.min(frame.clientWidth / 1920, frame.clientHeight / 1080))
+    const observer = new ResizeObserver(resize)
+    observer.observe(frame)
+    resize()
+    return () => observer.disconnect()
+  }, [])
+
+  function applyTheme(id) {
+    const preset = SLIDE_THEMES.find(theme => theme.id === id)
+    setSelectedTheme(id)
+    setSettings(previous => ({ ...previous, ...preset.settings }))
   }
 
-  return (
-    <div className='App'>
-      <Controls
-        settings={settings}
-        onSettingChange={updateSetting}
-        onReset={handleReset}
-        onClear={handleClear}
-        onExport={handleExport}
-      />
-      <main>     
-        <header>
-          <h2>Result: <span className='export-size-display'>{ exportSize }</span></h2>
-          <div>
-            <input type="text" placeholder='file name' onChange={handleFileName} value={fileName}/>
-            <button type='button' id='export-button' className='cta' onClick={handleExport}><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-328.46 309.23-499.23l42.16-43.38L450-444v-336h60v336l98.61-98.61 42.16 43.38L480-328.46ZM252.31-180Q222-180 201-201q-21-21-21-51.31v-108.46h60v108.46q0 4.62 3.85 8.46 3.84 3.85 8.46 3.85h455.38q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46v-108.46h60v108.46Q780-222 759-201q-21 21-51.31 21H252.31Z"/></svg><span>Download</span></button>
-          </div>
-        </header>
-        <CodeBox 
-          settings={settings} 
-          ref={codeBoxRef}
-          code={code}
-          header={header}
-          onCodeChange={setCode}
-          onHeaderChange={setHeader}
-        />
-      </main>
-    </div>
-  )
-}
+  async function enterFullscreen() {
+    setError('')
+    try {
+      if (!frameRef.current.requestFullscreen) throw new Error('unsupported')
+      await frameRef.current.requestFullscreen({ navigationUI: 'hide' })
+    } catch {
+      setError('Fullscreen is unavailable in this browser window. Open this page in Chrome, Edge, or Firefox and try again.')
+    }
+  }
 
+  async function exportCodeBox() {
+    if (!ready || exporting) return
+    setExporting(true)
+    setError('')
+    try {
+      await document.fonts.ready
+      const source = slideRef.current.querySelector('.CodeBox')
+      // Use native layout dimensions, independent of the preview's zoom.
+      const style = getComputedStyle(source)
+      const width = parseFloat(style.width)
+      const height = parseFloat(style.height)
+      const dataUrl = await toPng(source, {
+        width,
+        height,
+        pixelRatio: 2,
+        // Leave the canvas transparent while retaining the codebox's own fill.
+        style: { margin: '0', transform: 'none' },
+      })
+      const cleanName = Array.from(fileName).filter(character => character.charCodeAt(0) >= 32).join('')
+      const name = cleanName.trim().replace(/[<>:"/\\|?*]/g, '-').replace(/\.png$/i, '') || `${selectedTheme}-codebox`
+      download(dataUrl, `${name}.png`)
+    } catch {
+      setError('The codebox could not be downloaded. Please try again.')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  return <div className="App">
+    <Controls settings={settings} selectedTheme={selectedTheme} onTheme={applyTheme}
+      onSettingChange={(key, value) => setSettings(previous => ({ ...previous, [key]: value }))}
+      onClear={() => setCode('')}
+      code={code} onCode={setCode} header={header} onHeader={setHeader} />
+    <main className="workspace">
+      <header className="preview-toolbar"><h1>CodeBox2GO</h1>
+        <div className="preview-actions"><input className="export-filename" aria-label="File name (optional)" title="Optional file name" placeholder="File name (optional)" value={fileName} onChange={e => setFileName(e.target.value)} /><button className="cta codebox-download" onClick={exportCodeBox} disabled={!ready || exporting} title="Download the codebox as a transparent PNG at 2× resolution"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>{exporting ? 'Preparing…' : 'CodeBox Only'}</button></div>
+      </header>
+      {!ready && !highlight?.error && <p role="status">Preparing syntax highlighting…</p>}
+      {(error || highlight?.error) && <p className="notice" role="alert">{error || highlight.error}</p>}
+      <div className="preview-frame" ref={frameRef} style={{ backgroundColor: settings.pageColor }}>
+        <Slide ref={slideRef} settings={settings} code={code} header={header} html={ready ? highlight.html : ''} />
+        <button className="preview-fullscreen" onClick={enterFullscreen} disabled={!ready} aria-label="Open in fullscreen" title="Open in fullscreen">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#e3e3e3" aria-hidden="true"><path d="M140-140v-300h60v198.23L718.23-760H520v-60h300v300h-60v-198.23L241.77-200H440v60H140Z" /></svg>
+        </button>
+      </div>
+    </main>
+  </div>
+}
 export default App
